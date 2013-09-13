@@ -522,6 +522,17 @@ status_t OMXCodec::configureCodec(const sp<MetaData> &meta) {
             CODEC_LOGE("setAACFormat() failed (err = %d)", err);
             return err;
         }
+    } else if (!strcasecmp(MEDIA_MIMETYPE_AUDIO_MPEG, mMIME)) {
+        int32_t numChannels, sampleRate;
+        if (meta->findInt32(kKeyChannelCount, &numChannels)
+                && meta->findInt32(kKeySampleRate, &sampleRate)) {
+            // Since we did not always check for these, leave them optional
+            // and have the decoder figure it all out.
+            setRawAudioFormat(
+                    mIsEncoder ? kPortIndexInput : kPortIndexOutput,
+                    sampleRate,
+                    numChannels);
+        }
     } else if (!strcasecmp(MEDIA_MIMETYPE_AUDIO_G711_ALAW, mMIME)
             || !strcasecmp(MEDIA_MIMETYPE_AUDIO_G711_MLAW, mMIME)) {
         // These are PCM-like formats with a fixed sample rate but
@@ -1213,13 +1224,6 @@ status_t OMXCodec::setVideoOutputFormat(
         CHECK_EQ(err, (status_t)OK);
         CHECK_EQ((int)format.eCompressionFormat, (int)OMX_VIDEO_CodingUnused);
 
-        CHECK(format.eColorFormat == OMX_COLOR_FormatYUV420Planar
-               || format.eColorFormat == OMX_COLOR_FormatYUV420SemiPlanar
-               || format.eColorFormat == OMX_COLOR_FormatCbYCrY
-               || format.eColorFormat == OMX_TI_COLOR_FormatYUV420PackedSemiPlanar
-               || format.eColorFormat == OMX_QCOM_COLOR_FormatYVU420SemiPlanar
-               || format.eColorFormat == OMX_QCOM_COLOR_FormatYUV420PackedSemiPlanar64x32Tile2m8ka);
-
         int32_t colorFormat;
         if (meta->findInt32(kKeyColorFormat, &colorFormat)
                 && colorFormat != OMX_COLOR_FormatUnused
@@ -1390,6 +1394,8 @@ void OMXCodec::setComponentRole(
             "audio_decoder.raw", "audio_encoder.raw" },
         { MEDIA_MIMETYPE_AUDIO_FLAC,
             "audio_decoder.flac", "audio_encoder.flac" },
+        { MEDIA_MIMETYPE_AUDIO_MSGSM,
+            "audio_decoder.gsm", "audio_encoder.gsm" },
     };
 
     static const size_t kNumMimeToRole =

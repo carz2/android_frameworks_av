@@ -19,19 +19,20 @@ LOCAL_SRC_FILES:=                         \
         ESDS.cpp                          \
         FileSource.cpp                    \
         FLACExtractor.cpp                 \
-        FragmentedMP4Extractor.cpp        \
         HTTPBase.cpp                      \
         JPEGSource.cpp                    \
         MP3Extractor.cpp                  \
         MPEG2TSWriter.cpp                 \
         MPEG4Extractor.cpp                \
         MPEG4Writer.cpp                   \
+        MediaAdapter.cpp                  \
         MediaBuffer.cpp                   \
         MediaBufferGroup.cpp              \
         MediaCodec.cpp                    \
         MediaCodecList.cpp                \
         MediaDefs.cpp                     \
         MediaExtractor.cpp                \
+        MediaMuxer.cpp                    \
         MediaSource.cpp                   \
         MetaData.cpp                      \
         NuCachedSource2.cpp               \
@@ -78,7 +79,6 @@ LOCAL_SHARED_LIBRARIES := \
         libicuuc \
         liblog \
         libmedia \
-        libmedia_native \
         libsonivox \
         libssl \
         libstagefright_omx \
@@ -95,6 +95,7 @@ LOCAL_STATIC_LIBRARIES := \
         libstagefright_matroska \
         libstagefright_timedtext \
         libvpx \
+        libwebm \
         libstagefright_mpeg2ts \
         libstagefright_httplive \
         libstagefright_id3 \
